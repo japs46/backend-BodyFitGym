@@ -6,6 +6,8 @@ import com.japs.backend.backend_BodyFitGym.domain.port.out.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.NoSuchElementException;
+
 @RequiredArgsConstructor
 @Component
 public class DeleteUserUseCaseImpl implements IDeleteUserUseCase {
@@ -17,7 +19,7 @@ public class DeleteUserUseCaseImpl implements IDeleteUserUseCase {
 
         User existingUserWithId = userRepositoryPort.findById(id).orElse(null);
         if(existingUserWithId == null){
-            throw new RuntimeException("Usuario inexistente con el id: " + id);
+            throw new NoSuchElementException("No existe ningún usuario con el ID: " + id);
         }
 
         userRepositoryPort.delete(id);

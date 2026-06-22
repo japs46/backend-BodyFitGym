@@ -19,37 +19,37 @@ public class RetrieveUserUseCaseImpl implements IRetrieveUserUseCase {
     @Override
     public User getUserById(Long id) {
         if(id == null){
-            throw new IllegalArgumentException("El id no puede estar Vacio");
+            throw new IllegalArgumentException("El ID del usuario es obligatorio.");
         }
 
         if(id <= 0){
-            throw new IllegalArgumentException("El ID no puede ser negativo");
+            throw new IllegalArgumentException("El ID del usuario debe ser un número positivo.");
         }
-        return userRepositoryPort.findById(id).orElseThrow(()-> new NoSuchElementException("No se encontro un usuario con el ID: " + id));
+        return userRepositoryPort.findById(id).orElseThrow(()-> new NoSuchElementException("No existe ningún usuario con el ID: " + id));
     }
 
     @Override
     public User getUserByDocument(String document) {
 
         if(document == null || document.isBlank()){
-            throw new IllegalArgumentException("El documento no estar vacio");
+            throw new IllegalArgumentException("El número de documento es obligatorio.");
         }
 
         if(!document.matches("\\d+")){
-            throw new IllegalArgumentException("El documento debe ser numerico");
+            throw new IllegalArgumentException("El número de documento solo debe contener dígitos.");
         }
 
-        return userRepositoryPort.findByDocument(document).orElseThrow(() -> new NoSuchElementException("No se encontro un usuario con el documento: " + document));
+        return userRepositoryPort.findByDocument(document).orElseThrow(() -> new NoSuchElementException("No existe ningún usuario con el documento: " + document));
     }
 
     @Override
     public User getUserByUserName(String userName) {
 
         if(userName == null || userName.isBlank()){
-            throw new IllegalArgumentException("El nombre de usuario no puede estar vacio");
+            throw new IllegalArgumentException("El nombre de usuario es obligatorio.");
         }
 
-        return userRepositoryPort.findByUserName(userName).orElseThrow(() -> new NoSuchElementException("No se encontro un usuario con el nombre de usuario: " + userName));
+        return userRepositoryPort.findByUserName(userName).orElseThrow(() -> new NoSuchElementException("No existe ningún usuario con el nombre de usuario: " + userName));
     }
 
     @Override
