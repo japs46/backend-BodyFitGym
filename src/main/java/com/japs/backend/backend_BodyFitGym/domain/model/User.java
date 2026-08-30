@@ -18,27 +18,27 @@ public class User {
 
     private Long id;
 
-    @NotBlank(message = "La Cedula no puede estar vacia.")
-    @Pattern(regexp = "\\d+", message = "La cedula solo debe contener números.")
-    @Size(min = 6, max = 11, message = "La cédula debe tener entre 6 y 11 digitos.")
+    @NotBlank(message = "El número de documento es obligatorio.")
+    @Pattern(regexp = "\\d+", message = "El documento solo debe contener dígitos.")
+    @Size(min = 6, max = 11, message = "El documento debe tener entre 6 y 11 dígitos.")
     private String document;
 
-    @NotBlank(message = "El Nombre no puede estar Vacio")
-    @Size(max = 255, message = "El Nombre supera la cantidad de caracteres permitidos")
+    @NotBlank(message = "El nombre es obligatorio.")
+    @Size(max = 255, message = "El nombre no puede superar los 255 caracteres.")
     private String name;
 
-    @NotBlank(message = "El Apellido no puede estar vacio")
-    @Size(max = 255, message = "El Apellido supera la cantidad de caracteres permitidos")
+    @NotBlank(message = "El apellido es obligatorio.")
+    @Size(max = 255, message = "El apellido no puede superar los 255 caracteres.")
     private String lastName;
 
-    @NotBlank(message = "El Nombre de Usuario no puede estar vacio")
-    @Size(max = 255, message = "El Nombre de Usuario supera la cantidad de caracteres permitidos")
+    @NotBlank(message = "El nombre de usuario es obligatorio.")
+    @Size(max = 255, message = "El nombre de usuario no puede superar los 255 caracteres.")
     private String userName;
 
-    @NotBlank(message = "La Contraseña no puede estar vacia")
+    @NotBlank(message = "La contraseña es obligatoria.")
     @Pattern(
         regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&.#_-])[A-Za-z\\d@$!%*?&.#_-]{8,}$",
-        message = "Contraseña inválida. Ejemplo de formato válido: MiClave123!"
+        message = "La contraseña debe tener al menos 8 caracteres e incluir: una mayúscula, una minúscula, un número y un carácter especial (@$!%*?&.#_-)."
     )
     private String password;
 

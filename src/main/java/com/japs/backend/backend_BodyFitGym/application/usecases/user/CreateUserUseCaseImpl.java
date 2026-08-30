@@ -19,12 +19,12 @@ public class CreateUserUseCaseImpl implements ICreateUserUseCase {
 
         User existingUserWithUserName = userRepositoryPort.findByUserName(user.getUserName()).orElse(null);
         if(existingUserWithUserName != null){
-            throw new RuntimeException("Ya existe un usuario con este nombre de usuario");
+            throw new IllegalStateException("El nombre de usuario '" + user.getUserName() + "' ya está en uso.");
         }
 
         User existingUserWithDocument = userRepositoryPort.findByDocument(user.getDocument()).orElse(null);
         if(existingUserWithDocument != null){
-            throw new RuntimeException("Ya existe un usuario con este documento");
+            throw new IllegalStateException("Ya existe un usuario registrado con el documento: " + user.getDocument());
         }
 
         if(user.getPassword() != null && !user.getPassword().isBlank()){
