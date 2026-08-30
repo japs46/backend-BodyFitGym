@@ -8,6 +8,9 @@ import com.japs.backend.backend_BodyFitGym.domain.model.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,19 +86,23 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<User>>> search(
+    public ResponseEntity<ApiResponse<Page<User>>> search(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String userName,
-            @RequestParam(required = false) String document){
+            @RequestParam(required = false) String document,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        log.info("[UserController] GET /search - Filtros: name={}, username={}, document={}",name, userName, document);
+        log.info("[UserController] GET /search - Filtros: name={}, username={}, document={}", name, userName, document);
 
-        UserSearchCriteria userSearchCriteria = new UserSearchCriteria(name,document,userName);
+        UserSearchCriteria userSearchCriteria = new UserSearchCriteria(name, document, userName);
+        Pageable pageable = PageRequest.of(page,size);
 
-        List<User> users =userService.search(userSearchCriteria);
-        ApiResponse<List<User>> apiResponse = ResponseBuilder.successMessage("Usuarios Encontrados",users);
+        Page<User> userPage = userService.search(userSearchCriteria, pageable);
 
-        log.info("[UserController] Get /search - Resultados encontrados: {}",users);
+        ApiResponse<Page<User>> apiResponse = ResponseBuilder.successMessage("Usuarios Encontrados", userPage);
+
+        log.info("[UserController] GET /search - Resultados encontrados: {}", userPage.getTotalElements());
 
         return ResponseEntity.ok(apiResponse);
     }

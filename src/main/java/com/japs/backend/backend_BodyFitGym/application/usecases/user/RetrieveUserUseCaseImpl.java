@@ -5,6 +5,8 @@ import com.japs.backend.backend_BodyFitGym.domain.model.User;
 import com.japs.backend.backend_BodyFitGym.domain.port.in.user.IRetrieveUserUseCase;
 import com.japs.backend.backend_BodyFitGym.domain.port.out.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -53,9 +55,9 @@ public class RetrieveUserUseCaseImpl implements IRetrieveUserUseCase {
     }
 
     @Override
-    public List<User> search(UserSearchCriteria userSearchCriteria) {
+    public Page<User> search(UserSearchCriteria userSearchCriteria, Pageable pageable) {
 
-        return userRepositoryPort.search(userSearchCriteria);
+        return userRepositoryPort.search(userSearchCriteria,pageable);
 
     }
 }

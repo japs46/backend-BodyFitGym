@@ -8,6 +8,8 @@ import com.japs.backend.backend_BodyFitGym.infrastructure.driven_adapters.postgr
 import com.japs.backend.backend_BodyFitGym.infrastructure.driven_adapters.postgres.mapper.UserMapper;
 import com.japs.backend.backend_BodyFitGym.infrastructure.driven_adapters.postgres.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
@@ -49,7 +51,7 @@ public class UserAdapter implements UserRepositoryPort {
     }
 
     @Override
-    public List<User> search(UserSearchCriteria userSearchCrtiteria) {
+    public Page<User> search(UserSearchCriteria userSearchCrtiteria, Pageable pageable) {
 
         Specification<UserEntity> specification = (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
 
@@ -64,9 +66,6 @@ public class UserAdapter implements UserRepositoryPort {
         if(userSearchCrtiteria.getDocument() != null){
             specification = specification.and(UserSpecification.documentStartsWith(userSearchCrtiteria.getDocument()));
         }
-        return userEntityRepository.findAll(specification)
-                .stream()
-                .map(UserMapper::toModel)
-                .toList();
+        return userEntityRepository.findAll(specification,pageable).map(UserMapper::toModel);
     }
 }

@@ -7,6 +7,8 @@ import com.japs.backend.backend_BodyFitGym.domain.port.in.user.ICreateUserUseCas
 import com.japs.backend.backend_BodyFitGym.domain.port.in.user.IDeleteUserUseCase;
 import com.japs.backend.backend_BodyFitGym.domain.port.in.user.IRetrieveUserUseCase;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,7 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> search(UserSearchCriteria userSearchCriteria) {
-        return iRetrieveUserUseCase.search(userSearchCriteria);
+    public Page<User> search(UserSearchCriteria userSearchCriteria, Pageable pageable) {
+        return iRetrieveUserUseCase.search(userSearchCriteria,pageable);
     }
 }
