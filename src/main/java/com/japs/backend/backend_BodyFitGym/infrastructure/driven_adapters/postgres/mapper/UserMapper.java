@@ -17,6 +17,7 @@ public class UserMapper {
                 .userName(user.getUserName())
                 .password(user.getPassword())
                 .status(user.getStatus())
+                .role(user.getRole())
                 .registrationDate(user.getRegistrationDate())
                 .build();
     }
@@ -34,6 +35,7 @@ public class UserMapper {
                 .userName(userEntity.getUserName())
                 .password(userEntity.getPassword())
                 .status(userEntity.getStatus())
+                .role(userEntity.getRole())
                 .registrationDate(userEntity.getRegistrationDate())
                 .build();
     }

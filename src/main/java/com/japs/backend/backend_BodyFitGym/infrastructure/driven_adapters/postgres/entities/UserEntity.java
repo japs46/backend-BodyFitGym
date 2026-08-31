@@ -1,6 +1,7 @@
 package com.japs.backend.backend_BodyFitGym.infrastructure.driven_adapters.postgres.entities;
 
 
+import com.japs.backend.backend_BodyFitGym.domain.model.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +37,10 @@ public class UserEntity {
 
     @Column(nullable = false)
     private String status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
     @Column(name = "registration_date")
     private LocalDate registrationDate;
