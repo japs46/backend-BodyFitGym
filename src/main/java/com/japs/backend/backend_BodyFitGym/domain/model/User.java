@@ -1,6 +1,7 @@
 package com.japs.backend.backend_BodyFitGym.domain.model;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -43,6 +44,9 @@ public class User {
     private String password;
 
     private String status;
+
+    @NotNull(message = "El rol es obligatorio.")
+    private Role role;
 
     private LocalDate registrationDate;
 
