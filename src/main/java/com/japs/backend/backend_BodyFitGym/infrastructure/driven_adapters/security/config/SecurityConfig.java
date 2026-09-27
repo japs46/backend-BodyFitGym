@@ -51,6 +51,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/affiliate-membership/**").hasAnyRole("ADMINISTRADOR", "RECEPCIONISTA")
                         .requestMatchers(HttpMethod.GET, "/api/affiliate-membership/**").hasAnyRole("ADMINISTRADOR", "RECEPCIONISTA", "ENTRENADOR")
                         .requestMatchers(HttpMethod.DELETE, "/api/affiliate-membership/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers(HttpMethod.POST, "/api/attendance/**").hasAnyRole("ADMINISTRADOR", "RECEPCIONISTA")
+                        .requestMatchers(HttpMethod.GET, "/api/attendance/**").hasAnyRole("ADMINISTRADOR", "RECEPCIONISTA", "ENTRENADOR")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
