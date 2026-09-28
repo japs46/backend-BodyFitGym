@@ -5,8 +5,11 @@ import com.japs.backend.backend_BodyFitGym.domain.model.AffiliateMembership;
 import com.japs.backend.backend_BodyFitGym.domain.model.DurationUnit;
 import com.japs.backend.backend_BodyFitGym.domain.model.Membership;
 import com.japs.backend.backend_BodyFitGym.domain.model.MembershipStatus;
+import com.japs.backend.backend_BodyFitGym.domain.model.Sale;
+import com.japs.backend.backend_BodyFitGym.domain.model.SaleType;
 import com.japs.backend.backend_BodyFitGym.domain.model.SubscriptionStatus;
 import com.japs.backend.backend_BodyFitGym.domain.model.TrackingMode;
+import com.japs.backend.backend_BodyFitGym.domain.port.in.sale.ICreateSaleUseCase;
 import com.japs.backend.backend_BodyFitGym.domain.port.out.AffiliateMembershipRepositoryPort;
 import com.japs.backend.backend_BodyFitGym.domain.port.out.AffiliateRepositoryPort;
 import com.japs.backend.backend_BodyFitGym.domain.port.out.MembershipRepositoryPort;
@@ -38,6 +41,8 @@ class CreateAffiliateMembershipUseCaseImplTest {
     private AffiliateRepositoryPort affiliateRepositoryPort;
     @Mock
     private MembershipRepositoryPort membershipRepositoryPort;
+    @Mock
+    private ICreateSaleUseCase iCreateSaleUseCase;
 
     @InjectMocks
     private CreateAffiliateMembershipUseCaseImpl createAffiliateMembershipUseCase;
@@ -64,6 +69,7 @@ class CreateAffiliateMembershipUseCaseImplTest {
                 .hasMessageContaining("99");
 
         verify(affiliateMembershipRepositoryPort, never()).save(any());
+        verify(iCreateSaleUseCase, never()).createSale(any());
     }
 
     @Test
@@ -77,6 +83,7 @@ class CreateAffiliateMembershipUseCaseImplTest {
                 .hasMessageContaining("77");
 
         verify(affiliateMembershipRepositoryPort, never()).save(any());
+        verify(iCreateSaleUseCase, never()).createSale(any());
     }
 
     @Test
@@ -92,6 +99,7 @@ class CreateAffiliateMembershipUseCaseImplTest {
                 .hasMessageContaining("Bimestral");
 
         verify(affiliateMembershipRepositoryPort, never()).save(any());
+        verify(iCreateSaleUseCase, never()).createSale(any());
     }
 
     @Test
@@ -100,7 +108,8 @@ class CreateAffiliateMembershipUseCaseImplTest {
 
         when(affiliateRepositoryPort.findById(4L)).thenReturn(Optional.of(Affiliate.builder().id(4L).build()));
         when(membershipRepositoryPort.findById(3L)).thenReturn(Optional.of(activeMembership()));
-        when(affiliateMembershipRepositoryPort.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        when(affiliateMembershipRepositoryPort.save(any()))
+                .thenAnswer(inv -> ((AffiliateMembership) inv.getArgument(0)).toBuilder().id(10L).build());
 
         AffiliateMembership result = createAffiliateMembershipUseCase.createAffiliateMembership(input);
 
@@ -116,7 +125,14 @@ class CreateAffiliateMembershipUseCaseImplTest {
         assertThat(saved.getStatus()).isEqualTo(SubscriptionStatus.ACTIVA);
         assertThat(saved.getFrozen()).isFalse();
         assertThat(saved.getCreatedAt()).isEqualTo(today);
-        assertThat(result).isEqualTo(saved);
+        assertThat(result.getId()).isEqualTo(10L);
+
+        ArgumentCaptor<Sale> saleCaptor = ArgumentCaptor.forClass(Sale.class);
+        verify(iCreateSaleUseCase).createSale(saleCaptor.capture());
+        Sale sale = saleCaptor.getValue();
+        assertThat(sale.getAffiliateId()).isEqualTo(4L);
+        assertThat(sale.getType()).isEqualTo(SaleType.AFILIACION);
+        assertThat(sale.getAffiliateMembershipId()).isEqualTo(10L);
     }
 
     @Test
