@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -31,6 +32,13 @@ public class SaleAdapter implements SaleRepositoryPort {
     public Optional<Sale> findById(Long id) {
         return saleEntityRepository.findById(id)
                 .map(SaleMapper::toModel);
+    }
+
+    @Override
+    public List<Sale> findByAffiliateMembershipId(Long affiliateMembershipId) {
+        return saleEntityRepository.findByAffiliateMembershipId(affiliateMembershipId).stream()
+                .map(SaleMapper::toModel)
+                .toList();
     }
 
     @Override

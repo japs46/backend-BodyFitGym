@@ -3,8 +3,11 @@ package com.japs.backend.backend_BodyFitGym.application.usecases.affiliatemember
 import com.japs.backend.backend_BodyFitGym.domain.model.AffiliateMembership;
 import com.japs.backend.backend_BodyFitGym.domain.model.Membership;
 import com.japs.backend.backend_BodyFitGym.domain.model.MembershipStatus;
+import com.japs.backend.backend_BodyFitGym.domain.model.Sale;
+import com.japs.backend.backend_BodyFitGym.domain.model.SaleType;
 import com.japs.backend.backend_BodyFitGym.domain.model.SubscriptionStatus;
 import com.japs.backend.backend_BodyFitGym.domain.port.in.affiliatemembership.ICreateAffiliateMembershipUseCase;
+import com.japs.backend.backend_BodyFitGym.domain.port.in.sale.ICreateSaleUseCase;
 import com.japs.backend.backend_BodyFitGym.domain.port.out.AffiliateMembershipRepositoryPort;
 import com.japs.backend.backend_BodyFitGym.domain.port.out.AffiliateRepositoryPort;
 import com.japs.backend.backend_BodyFitGym.domain.port.out.MembershipRepositoryPort;
@@ -14,6 +17,12 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
 
+/**
+ * Registrar una afiliación también registra su venta (pago de la afiliación)
+ * automáticamente — en el legado esto lo hacía la misma pantalla; se delega a
+ * ICreateSaleUseCase para no duplicar el cálculo de precio ni el forzado de
+ * estado/fecha que ya vive en el módulo de Ventas.
+ */
 @RequiredArgsConstructor
 @Component
 public class CreateAffiliateMembershipUseCaseImpl implements ICreateAffiliateMembershipUseCase {
@@ -21,6 +30,7 @@ public class CreateAffiliateMembershipUseCaseImpl implements ICreateAffiliateMem
     private final AffiliateMembershipRepositoryPort affiliateMembershipRepositoryPort;
     private final AffiliateRepositoryPort affiliateRepositoryPort;
     private final MembershipRepositoryPort membershipRepositoryPort;
+    private final ICreateSaleUseCase iCreateSaleUseCase;
 
     @Override
     public AffiliateMembership createAffiliateMembership(AffiliateMembership affiliateMembership) {
@@ -54,6 +64,14 @@ public class CreateAffiliateMembershipUseCaseImpl implements ICreateAffiliateMem
                 .createdAt(LocalDate.now())
                 .build();
 
-        return affiliateMembershipRepositoryPort.save(toSave);
+        AffiliateMembership saved = affiliateMembershipRepositoryPort.save(toSave);
+
+        iCreateSaleUseCase.createSale(Sale.builder()
+                .affiliateId(saved.getAffiliateId())
+                .type(SaleType.AFILIACION)
+                .affiliateMembershipId(saved.getId())
+                .build());
+
+        return saved;
     }
 }
